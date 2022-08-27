@@ -11,7 +11,6 @@ pip install SimpleHTTPServer -i http://pypi.douban.com/simple/ --trusted-host=py
 lib包路径：D:\Program Files\anaconda\envs\sycode
 
 # 代办
-1、java代码爬虫-spider
 2、代码推荐model
 3、python服务提供
 4、知识图谱构建
