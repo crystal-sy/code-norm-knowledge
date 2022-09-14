@@ -8,7 +8,8 @@ Created on Sun Sep  4 18:41:29 2022
 import os
 import just
 import numpy as np
-from tensorflow.keras.layers import Activation, Dense, LSTM
+from tensorflow.keras import regularizers
+from tensorflow.keras.layers import Activation, Dense, LSTM, Dropout, Bidirectional
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.callbacks import TensorBoard
@@ -16,7 +17,7 @@ from tensorflow.keras.callbacks import TensorBoard
 from matplotlib import pyplot as plt
 
 
-class LSTMBase(object):
+class biLSTMBase(object):
     def __init__(self, model_name, encoder_decoder=None, hidden_units=128, base_path="models/"):
         self.model_name = model_name
         self.h5_path = base_path + model_name + ".h5"
@@ -42,17 +43,18 @@ class LSTMBase(object):
         if os.path.isfile(self.h5_path):
             model = self.load()
         else:
-            # build the model: a single LSTM
+            # build the model: a Bidirectional LSTM
             print('Building model...')
             num_unique_q_tokens = len(self.encoder_decoder.ex)
             num_unique_a_tokens = len(self.encoder_decoder.ey)
             model = Sequential()
             input_s = (None, num_unique_q_tokens)
-            model.add(LSTM(self.hidden_units, input_shape=input_s))
-            model.add(Dense(num_unique_a_tokens))
+            model.add(Bidirectional(LSTM(self.hidden_units, input_shape=input_s, activation='softsign')))
+            model.add(Dropout(0.5)) # 防止过拟合
+            model.add(Dense(num_unique_a_tokens, kernel_regularizer=regularizers.l2(0.003)))
             model.add(Activation('softmax'))
             optimizer = RMSprop(lr=0.01)
-            model.compile(loss='categorical_crossentropy', optimizer=optimizer,
+            model.compile(loss='binary_crossentropy', optimizer=optimizer,
                           metrics=['mse', 'acc'])
         return model
 

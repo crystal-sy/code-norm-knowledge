@@ -8,17 +8,17 @@ Created on Sun Sep  4 18:41:29 2022
 import just
 
 from encoder_decoder import TextEncoderDecoder, text_tokenize
-from model import LSTMBase
+from model import biLSTMBase
 
 TRAINING_TEST_CASES = ["from tensorflow.keras.layers import"]
 
 
 def get_data():
-    return [values[1] for values in just.multi_read("data/**/*.java")]
+    return [values[1] for values in just.multi_read("data/**/*.py")]
 
 
 def train(ted, model_name):
-    lb = LSTMBase(model_name, ted)
+    lb = biLSTMBase(model_name, ted)
     try:
         lb.train(test_cases=TRAINING_TEST_CASES)
     except KeyboardInterrupt:
@@ -44,7 +44,7 @@ def train_token(model_name):
 
 
 def get_model(model_name):
-    return LSTMBase(model_name)
+    return biLSTMBase(model_name)
 
 
 def code_recommendation(model, text, diversities):
