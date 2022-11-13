@@ -2,3 +2,4 @@
 /recommendation/data/sltg-admin
 /recommendation/models
 /recommendation/models-bak
+/recommendation/bert-base-cased/pytorch_model.bin
