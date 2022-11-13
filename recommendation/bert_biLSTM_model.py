@@ -106,8 +106,8 @@ class bert_lstm(nn.Module):
         return hidden
 
 class ModelConfig:
-    batch_size = 32
-    output_size = 2
+    batch_size = 50
+    output_size = 0 # 以实际为准
     # 768/2，且将embedding层换成了bert，所以Lstm的input_size 为bert的输出size，所以Lstm的第一个参数是768
     # 详细768可以查看bert的config.json文件hidden_size
     hidden_dim = 384
@@ -116,7 +116,6 @@ class ModelConfig:
     bidirectional = True  #这里为True，为双向LSTM
     # training params
     epochs = 10
-    # batch_size=50
     print_every = 10
     clip=5 # gradient clipping
     use_cuda = USE_CUDA

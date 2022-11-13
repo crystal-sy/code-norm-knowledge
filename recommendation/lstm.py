@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Sep  4 18:41:29 2022
+Created on Sun Sep 4 18:41:29 2022
 
 @author: styra
 """
@@ -27,14 +27,6 @@ def train(ted, model_name):
     lb.save()
 
 
-def train_char(model_name):
-    data = get_data()
-    # list makes a str "str" into a list ["s","t","r"]
-    ted = TextEncoderDecoder(data, tokenize=list, untokenize="".join, padding=" ",
-                             min_count=1, maxlen=40)
-    train(ted, model_name)
-
-
 def train_token(model_name):
     data = get_data()
     # text tokenize splits source code into python tokens
@@ -57,19 +49,4 @@ def code_recommendation(model, text, diversities):
 
 
 if __name__ == "__main__":
-    # train_token('neural_token')
-    train_char('neural_token')
-    '''
-    import sys
-    if len(sys.argv) != 3:
-        raise Exception(
-            "expecting model name, such as 'neural' and type (either 'char' or 'token'")
-    model_name = "_".join(sys.argv[1:])
-    if sys.argv[2] == "char":
-        train_char(model_name)
-    elif sys.argv[2] == "token":
-        train_token(model_name)
-    else:
-        msg = "The second argument cannot be {}, but should be either 'char' or 'token'"
-        raise Exception(msg.format(sys.argv[2]))
-    '''
+    train_token('neural_token')
