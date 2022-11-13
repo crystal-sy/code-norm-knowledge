@@ -1,2 +1,4 @@
 /.idea/
-/recommendation/data/
+/recommendation/data/sltg-admin
+/recommendation/models
+/recommendation/models-bak
