@@ -13,6 +13,7 @@ USE_CUDA = torch.cuda.is_available()
 if USE_CUDA:
     torch.cuda.manual_seed(0)
 
+data_dir = 'data/'
 
 #剔除标点符号,\xa0 空格
 def pretreatment(questions):
@@ -259,6 +260,8 @@ def build_coders(tokens):
     word_to_index['UNKNOWN'] = 0
     index_to_word = {v: k for k, v in word_to_index.items()}
     index_to_word[0] = 'UNKNOWN'
+    
+    writeDictFile('index_to_word.txt', index_to_word)
     return word_to_index, index_to_word
 
 def get_index(word_to_index, answers):
@@ -272,6 +275,19 @@ def get_answer(index_to_word, answers):
     for index in answers:
         y.append(index_to_word.get(index.item(), '0'))
     return y
+
+def writeDictFile(fileName, dicts):
+    fp = open(data_dir + fileName, 'w', encoding='UTF-8')
+    fp.write(str(dicts))
+    fp.close()
+    
+def readfile(fileName):
+    #文件输入
+    content = {}
+    with open(data_dir + fileName, 'r', encoding='UTF-8') as f:
+        content = eval(f.readlines()[0])
+        f.close()
+    return content
 
 if __name__ == '__main__':
     model_config = ModelConfig()
@@ -328,5 +344,5 @@ if __name__ == '__main__':
     print(results)
     answers = get_answer(index_to_word, results)
     print(answers)
-    
+
 
