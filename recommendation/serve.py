@@ -14,7 +14,7 @@ sys.path.append(project_path)
 from crossdomain import crossdomain
 from flask import Flask, jsonify, request
 
-from lstm import code_recommendation, get_model
+from bert_biLSTM_model import ModelConfig, predict, get_answer, readfile
 
 
 def read_models(base_path="models/"):
@@ -22,8 +22,6 @@ def read_models(base_path="models/"):
 
 
 app = Flask(__name__)
-
-models = {x: get_model(x) for x in read_models()}
 
 
 def get_args(req):
@@ -34,35 +32,37 @@ def get_args(req):
     return args
 
 
-@app.route("/predict", methods=["GET", "POST", "OPTIONS"])
+@app.route("/code_predict", methods=["GET", "POST", "OPTIONS"])
 @crossdomain(origin='*', headers="Content-Type")
-def predict():
+def code_predict_online():
     args = get_args(request)
-    sentence = args.get("keyword", "from ")
-    model_name = args.get("model", "char")
-    if model_name not in models:
-        models[model_name] = get_model(model_name)
-    suggestions = code_recommendation(models[model_name], sentence, [0.2, 0.5, 1])
-    return jsonify({"data": {"results": [x.strip() for x in suggestions]}})
-
-
-@app.route("/get_models", methods=["GET", "POST", "OPTIONS"])
-@crossdomain(origin='*', headers="Content-Type")
-def get_models():
-    return jsonify({"data": {"results": list(models)}})
+    question = args.get("question", "")
+    answers = code_predict(question)
+    return jsonify({"data": {"results": [x.strip() for x in answers]}})
 
 
 def main(host="127.0.0.1", port=6001):
     app.run(host=host, port=port, debug=True)
 
 
+def code_predict_offline(question):
+    return code_predict(question)
+    
+def code_predict(question):
+    index_to_word = readfile('index_to_word.txt')
+    model_config = ModelConfig()
+    model_config.output_size = len(index_to_word)
+    results = predict(question, model_config)
+    print(results)
+    answers = get_answer(index_to_word, results)
+    print(answers)
+    return answers
+    
+
 if __name__ == "__main__":
+    """
     main()
     """
-    sentence = 'from keras.layers '
-    model_name = 'neural_token'
-    if model_name not in models:
-        models[model_name] = get_model(model_name)
-    suggestions = neural_complete(models[model_name], sentence, [0.2, 0.5, 1])
-    print([x.strip() for x in suggestions])
-    """
+    test_question = ['import org.springframework.']
+    code_predict_offline(test_question)
+    
