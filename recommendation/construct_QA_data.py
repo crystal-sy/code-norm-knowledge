@@ -12,6 +12,7 @@ import tokenize as tk
 from io import BytesIO
 
 data_dir = 'data/'
+end_flag = 'PARAM_END'
 
 # 文件加载
 def loadfile(dirPath, javaFileList):
@@ -32,12 +33,13 @@ def readfile(filePath):
     with open(filePath, 'r', encoding='UTF-8') as f:
         for line in f.readlines():
             line = line.strip()
+            # 去除无意义的代码段
             if line.startswith('package ') or line == '\n' or line == '' or line.startswith('//') or line.startswith('/*') or line.startswith('*') or line.startswith('*/'):
                 continue
             elif line.startswith('import '):
-                import_content.append(line)
+                import_content.append(line + end_flag)
             else:
-                content.append(line)
+                content.append(line + end_flag)
         f.close()
     return content, import_content
 
@@ -48,7 +50,7 @@ def writeFile(questions, answers):
     fp.write('Q,A')
     fp.write('\n')
     seqlen = len(questions)
-    for i in range(0, seqlen - 1, 1):
+    for i in range(0, seqlen, 1):
         content = questions[i].replace(',', '@COMMA_CHAR_REPLACE') + ',' + answers[i].replace(',', '@COMMA_CHAR_REPLACE')
         fp.write(content)
         fp.write('\n')
@@ -159,8 +161,6 @@ if __name__ == "__main__":
     for file in javaFileList:
         contents = []
         content, import_content = readfile(file)
-        # print(import_content)
-        # print(content)
         contents.append(import_content)
         contents.append(content)
         text.append(contents)
