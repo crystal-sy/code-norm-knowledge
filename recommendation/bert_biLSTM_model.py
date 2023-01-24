@@ -122,6 +122,7 @@ class ModelConfig:
     use_cuda = USE_CUDA
     bert_path = 'bert-base-cased' #预训练bert路径
     save_path = 'models/bert_biLSTM.pth' #模型保存路径
+    original_save_path = 'models/230104/bert_biLSTM.pth' #模型保存路径
 
 
 def train_model(config, data_train):
@@ -130,6 +131,7 @@ def train_model(config, data_train):
                     config.output_size,
                     config.n_layers, 
                     config.bidirectional)
+    net.load_state_dict(torch.load(config.original_save_path))
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=config.lr)
     if(config.use_cuda):
