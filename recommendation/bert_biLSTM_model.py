@@ -286,8 +286,9 @@ def writeDictFile(fileName, dicts):
 def readfile(fileName):
     #文件输入
     content = {}
+    globals = {'nan': 0}
     with open(data_dir + fileName, 'r', encoding='UTF-8') as f:
-        content = eval(f.readlines()[0])
+        content = eval(f.readlines()[0], globals)
         f.close()
     return content
 

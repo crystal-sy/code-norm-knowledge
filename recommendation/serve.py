@@ -12,7 +12,7 @@ project_path = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(project_path)
 
 from crossdomain import crossdomain
-from flask import Flask, jsonify, request
+from flask import Flask, request
 
 from bert_biLSTM_model import ModelConfig, predict, get_answer, readfile
 
@@ -37,8 +37,7 @@ def get_args(req):
 def code_predict_online():
     args = get_args(request)
     question = args.get("question", "")
-    answers = code_predict(question)
-    return jsonify({"data": {"results": [x.strip() for x in answers]}})
+    return code_predict(question)
 
 
 def main(host="127.0.0.1", port=6001):
@@ -65,4 +64,3 @@ if __name__ == "__main__":
     """
     test_question = ['import org.springframework.']
     code_predict_offline(test_question)
-    
