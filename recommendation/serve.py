@@ -79,7 +79,7 @@ def model_predict(question, model_config, index_to_word, diversity):
         print('new_text_token:', new_text_token)
         outputs += new_text_token
         question += new_text_token
-        if 'PARAM_END' == new_text_token:
+        if 'PARAM_END' == new_text_token or ';' == new_text_token:
             break
     print('Run end on ', diversity)
     return outputs
