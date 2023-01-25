@@ -248,12 +248,17 @@ def predict(test_question_list, config):
         # get the output from the model
         output = net(inputs, h)
         # 将Softmax函数应用于一个n维输入张量，对其进行缩放，使n维输出张量的元素位于[0,1]范围内，总和为1。
+        # print(output)
+        
         output = torch.nn.Softmax(dim=1)(output)
-        print(output)
+        # print(output)
+        '''
         values, indices = torch.sort(output, descending=True, stable=True)
         print(values)
         print(indices)
         return indices[0][:20]
+        '''
+        return output
 
 def build_coders(tokens):
     tokens = [item for sublist in tokens for item in sublist]
